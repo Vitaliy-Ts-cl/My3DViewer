@@ -1,5 +1,4 @@
 cmake_minimum_required(VERSION 3.20)
-
 project(My3DViewer LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 17)
@@ -10,5 +9,15 @@ find_package(glm CONFIG REQUIRED)
 find_package(glfw3 CONFIG REQUIRED)
 find_package(glad CONFIG REQUIRED)
 
-add_executable(My3DViewer main.cpp)
+add_executable(My3DViewer
+    main.cpp
+    ViewerWindow.cpp
+    ViewerWindow.h
+    OpenglRenderSystem.cpp
+    OpenglRenderSystem.h
+    GeometryPrimitives.cpp
+    GeometryPrimitives.h
+    Vertex.h
+)
+
 target_link_libraries(My3DViewer PRIVATE glm::glm-header-only glfw glad::glad)

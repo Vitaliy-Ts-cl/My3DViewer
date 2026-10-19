@@ -1,33 +1,47 @@
-# My3DViewer
+# My3DViewer — Lab 8
 
-Базовий C++17-проєкт 3D-в'ювера для лабораторної роботи № 7.
-Майбутня мета — завантаження і відображення 3D-моделей, зокрема STL.
-**На поточному етапі завантаження STL ще не реалізоване.**
+Лабораторна робота №8: робота з вікном GLFW і рендерингом в OpenGL.
+Проєкт є продовженням My3DViewer із ЛР №7.
 
-## Використані технології
+## Реалізовано
 
-- **GLM** — математика векторів і матриць;
-- **GLFW** — створення вікна і контексту OpenGL;
-- **Glad** — завантаження функцій OpenGL;
-- **CMake** — налаштування і збірка;
-- **vcpkg** — встановлення зовнішніх залежностей;
-- **Git** — контроль версій.
+- `ViewerWindow` — GLFW-вікно та callback-функції для клавіатури/миші;
+- `OpenglRenderSystem` — OpenGL 3.3 (Glad, VAO/VBO, GLSL-шейдери), очищення екрана,
+  viewport, тест глибини, освітлення (до 8 джерел), матриці World/View/Projection;
+- `Vertex` — позиція, нормаль, RGB-колір;
+- `GeometryPrimitives::createCubeVertices()` — 12 трикутників, 36 вершин;
+- `GeometryPrimitives::createPyramidVertices()` — **чотирикутна піраміда**:
+  4 трикутні бокові грані + квадратна основа (2 трикутники), **18 вершин**;
+- керування переміщенням, оглядом і наближенням об'єкта.
 
-## Збірка (Windows, Visual Studio 2022, PowerShell)
+## Управління
 
-Потрібні Git, CMake, Visual Studio 2022 із компонентом **Desktop development with C++**, vcpkg.
+| Клавіші / миша | Дія |
+| --- | --- |
+| **P** / **1** | Показати піраміду (за замовчуванням) |
+| **C** / **2** | Показати куб |
+| Стрілки | Перемістити об'єкт по X/Y |
+| Ліва кнопка миші + рух | Обертання камери навколо об'єкта |
+| Колесо миші | Масштаб (наближення/віддалення) |
+| **R** | Скинути положення і камеру |
+| **Esc** | Закрити програму |
 
-```powershell
-$env:VCPKG_ROOT = "$HOME\vcpkg"
-cmake -S . -B build -G "Visual Studio 17 2022" -A x64 "-DCMAKE_TOOLCHAIN_FILE=$env:VCPKG_ROOT\scripts\buildsystems\vcpkg.cmake"
+## Збірка (Windows / CMD)
+
+Середовище: VS Code, CMake, Visual Studio Build Tools 2022 (MSVC), vcpkg.
+Попередньо встановлені залежності з ЛР №7 повторно вручну не потрібні.
+
+Відкрийте CMD у `D:\\Учоба Віталій\\Програмування\\My3DViewer` і виконайте:
+
+```bat
+set "VCPKG_ROOT=D:\vcpkg"
+cmake -S . -B build -G "Visual Studio 17 2022" -A x64 "-DCMAKE_TOOLCHAIN_FILE=D:/vcpkg/scripts/buildsystems/vcpkg.cmake"
 cmake --build build --config Release
-.\build\Release\My3DViewer.exe
+"build\Release\My3DViewer.exe"
 ```
 
-Під час конфігурації CMake автоматично встановлює залежності з `vcpkg.json`.
+На екрані з'являється освітлена різнокольорова піраміда; натисніть C для куба.
 
-## Результат
-
-Програма виводить вектор `(1, 0, 0)`, версію OpenGL і повідомлення
-`LAB 7 SUCCESS: GLM, GLFW and Glad initialized.` та відкриває порожнє
-вікно OpenGL із темним фоном. Вікно є основою для майбутнього 3D-в'ювера.
+**Примітка:** методичка показує застарілий API `glBegin/glEnd`,
+що несумісний з OpenGL 3.3 Core Profile. Тут реалізовано той самий рендеринг
+через шейдери та буфери вершин, сумісний із конфігурацією ЛР №7.
